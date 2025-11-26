@@ -97,3 +97,35 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# ===================================================================
+# OS-generated files
+# ===================================================================
+.DS_Store
+Thumbs.db
+
+# ===================================================================
+# AR Foundation / ARKit / ARCore
+# ===================================================================
+# AR Foundation manages native plugins automatically; ignore build outputs
+NativePlugins/
+Plugins/Android/libs/
+Plugins/iOS/build/
+
+# ARCore
+*.aar
+
+# ARKit / Xcode
+DerivedData/
+*.xcworkspace/
+*.xcuserstate
+*.xcuserdatad/
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+
+# ===================================================================
+# iOS Builds (Unity → Xcode)
+# ===================================================================
+# Ignore generated Xcode export folder unless intentionally included
+*/iOSBuild/
+*/Xcode/
