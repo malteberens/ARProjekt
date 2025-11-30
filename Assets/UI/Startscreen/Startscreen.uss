@@ -1,0 +1,26 @@
+.root {
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: black;
+}
+
+#title {
+    color: white;
+    font-size: 40px;
+    unity-font-style: bold;
+    margin-bottom: 50px;
+}
+
+#playButton {
+    width: 260px;
+    height: 80px;
+    font-size: 28px;
+    color: black;
+    background-color: white;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+}

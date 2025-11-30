@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Label text="FaceRaiders AR" style="-unity-font-style: bold; -unity-text-align: middle-center; font-size: 22px; align-self: center; align-items: center; justify-content: flex-end; position: absolute; top: 100px; left: 25%; right: 25%;" />
+    <ui:Button text="Anleitung" style="font-size: 22px; position: absolute; top: 354px; left: 25%; visibility: visible; white-space: pre; -unity-text-align: middle-center; bottom: auto; right: 25%;" />
+</ui:UXML>
