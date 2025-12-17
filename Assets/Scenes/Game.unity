@@ -1028,6 +1028,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 342042484157882190, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1ea35ec24302396478d8e695689d7db3, type: 3}
+    - target: {fileID: 724723241972209270, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 724723241972209270, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1467569335598156298, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3e652a597824bd44d91fd93f87e3857d, type: 3}
     - target: {fileID: 2567373671165420152, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1108,6 +1124,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4656765243158979417, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 6074959266926884390, guid: 006f7f82ca50d224a993a4ca8304ad81, type: 3}
     - target: {fileID: 4683105311907637901, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
       propertyPath: m_Name
       value: GameCanvas
@@ -1115,6 +1135,10 @@ PrefabInstance:
     - target: {fileID: 4683105311907637901, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7398852887677227715, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7560526664964132428, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
       propertyPath: m_fontColor.b
@@ -1132,7 +1156,8 @@ PrefabInstance:
       propertyPath: m_fontColor32.rgba
       value: 4294967295
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1951587884063992340, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
