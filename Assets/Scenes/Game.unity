@@ -119,6 +119,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &68020399 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1130091525314703112, guid: 3a812962bc9fb418ea6de93a6d49c34b, type: 3}
+  m_PrefabInstance: {fileID: 2019463830749531295}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &218362889
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,6 +559,20 @@ Canvas:
   m_CorrespondingSourceObject: {fileID: 8505668068499719109, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
   m_PrefabInstance: {fileID: 5147245293268023878}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1140598068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140598063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f15fecaf691204050aeb684341d7ef2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TouchTextEditor
+  activeCanvas: {fileID: 0}
+  textField: {fileID: 68020399}
 --- !u!1 &1168364930
 GameObject:
   m_ObjectHideFlags: 0
@@ -876,6 +901,52 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &1378094488
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1378094490}
+  - component: {fileID: 1378094489}
+  m_Layer: 0
+  m_Name: Shotcounter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1378094489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1378094488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f15fecaf691204050aeb684341d7ef2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TouchTextEditor
+  activeCanvas: {fileID: 1140598063}
+  textField: {fileID: 68020399}
+--- !u!4 &1378094490
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1378094488}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 578.8562, y: 1821.2986, z: -52.6355}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!223 &1440551956 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 4701577201749729904, guid: 56c64933c975940e483b447e5977d5b0, type: 3}
@@ -1160,7 +1231,10 @@ PrefabInstance:
     - {fileID: 1951587884063992340, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4683105311907637901, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1140598068}
   m_SourcePrefab: {fileID: 100100000, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
 --- !u!1001 &7132061521854717974
 PrefabInstance:
@@ -1417,3 +1491,4 @@ SceneRoots:
   - {fileID: 5147245293268023878}
   - {fileID: 2019463830749531295}
   - {fileID: 7265421893400205904}
+  - {fileID: 1378094490}
