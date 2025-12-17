@@ -843,6 +843,7 @@ GameObject:
   - component: {fileID: 405064113}
   - component: {fileID: 405064112}
   - component: {fileID: 405064111}
+  - component: {fileID: 405064114}
   m_Layer: 0
   m_Name: AR Session
   m_TagString: Untagged
@@ -892,6 +893,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &405064114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 405064110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83d1821a848904e53816da9970e54cd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CanvasAutoSwitch
+  canvasToHide: {fileID: 1140598063}
+  canvasToShow: {fileID: 1457737334}
+  delayInSeconds: 5
 --- !u!1 &497469094
 GameObject:
   m_ObjectHideFlags: 0
@@ -976,6 +992,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 405064114}
+        m_TargetAssemblyTypeName: CanvasAutoSwitch, Assembly-CSharp
+        m_MethodName: StartCanvasSwitch
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
       - m_Target: {fileID: 497469100}
         m_TargetAssemblyTypeName: CanvasSwitcher, Assembly-CSharp
         m_MethodName: ShowCanvasByName
@@ -3876,6 +3904,7 @@ GameObject:
   - component: {fileID: 1803093405}
   - component: {fileID: 1803093404}
   - component: {fileID: 1803093407}
+  - component: {fileID: 1803093408}
   m_Layer: 5
   m_Name: PlayButton
   m_TagString: Untagged
@@ -3947,6 +3976,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 405064114}
+        m_TargetAssemblyTypeName: CanvasAutoSwitch, Assembly-CSharp
+        m_MethodName: StartCanvasSwitch
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
       - m_Target: {fileID: 1803093407}
         m_TargetAssemblyTypeName: CanvasSwitcher, Assembly-CSharp
         m_MethodName: ShowCanvasByName
@@ -4014,6 +4055,21 @@ MonoBehaviour:
   - {fileID: 1457737337}
   - {fileID: 1140598066}
   - {fileID: 289896222}
+--- !u!114 &1803093408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803093402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83d1821a848904e53816da9970e54cd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CanvasAutoSwitch
+  canvasToHide: {fileID: 1140598063}
+  canvasToShow: {fileID: 1457737334}
+  delayInSeconds: 5
 --- !u!1 &1805061975
 GameObject:
   m_ObjectHideFlags: 0
