@@ -231,17 +231,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a812962bc9fb418ea6de93a6d49c34b, type: 3}
---- !u!114 &100232907 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5396436927144384966, guid: 025516207e5724efb9ab689f502649cd, type: 3}
-  m_PrefabInstance: {fileID: 153891423}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0feaf8d3920664cf280a32c5ea9d892b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ARPlaneSpawner
 --- !u!1001 &153891423
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -296,6 +285,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3999057842191574356, guid: 025516207e5724efb9ab689f502649cd, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5396436927144384966, guid: 025516207e5724efb9ab689f502649cd, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5396436927144384966, guid: 025516207e5724efb9ab689f502649cd, type: 3}
@@ -306,11 +299,43 @@ PrefabInstance:
       propertyPath: planeManager
       value: 
       objectReference: {fileID: 2512387470422636670}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5396436927144384966, guid: 025516207e5724efb9ab689f502649cd, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3999057842191574356, guid: 025516207e5724efb9ab689f502649cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 305002027}
   m_SourcePrefab: {fileID: 100100000, guid: 025516207e5724efb9ab689f502649cd, type: 3}
+--- !u!1 &305002024 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3999057842191574356, guid: 025516207e5724efb9ab689f502649cd, type: 3}
+  m_PrefabInstance: {fileID: 153891423}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &305002027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305002024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39f2a465209804336b740fe0e5ae5297, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AutomaticSpawning
+  planeManager: {fileID: 2512387470422636670}
+  enemyPrefab: {fileID: 613292779795284151, guid: b5f98c6db6c8c4bab983110f6df33fd9, type: 3}
+  minDistanceFromCamera: 1
+  maxDistanceFromCamera: 5
+  minPlaneSize: 0.5
+  edgeMargin: 0.2
+  spawnHeightOffset: 0
+  autoSpawn: 1
+  spawnInterval: 5
+  maxEnemies: 3
+  initialDelay: 2
 --- !u!1 &397963960
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,9 +419,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 100232907}
+      - m_Target: {fileID: 11500000, guid: 39f2a465209804336b740fe0e5ae5297, type: 3}
         m_TargetAssemblyTypeName: ARPlaneSpawner, Assembly-CSharp
-        m_MethodName: SpawnEnemy
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
