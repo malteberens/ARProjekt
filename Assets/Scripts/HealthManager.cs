@@ -99,7 +99,7 @@ public class HealthManager : MonoBehaviour
     {
         if (endscreenText != null)
         {
-            endscreenText.text = $"Game Over!\nVerlorene Herzen: {totalLostHearts}";
+            endscreenText.text = $"Verlorene Herzen: {totalLostHearts}";
         }
     }
     
