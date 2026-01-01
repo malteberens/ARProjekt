@@ -3,6 +3,7 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 
 public class AutomaticSpawning : MonoBehaviour
 {
@@ -22,8 +23,14 @@ public class AutomaticSpawning : MonoBehaviour
     [SerializeField] private int maxEnemies = 5;
     [SerializeField] private float initialDelay = 2f;
     
+    [Header("UI Textfelder")]
+    [SerializeField] private TextMeshProUGUI activeEnemiesText;
+    [SerializeField] private TextMeshProUGUI destroyedEnemiesTextGameplay;
+    [SerializeField] private TextMeshProUGUI destroyedEnemiesTextEnd;
+    
     private float nextSpawnTime;
     private int currentEnemyCount = 0;
+    private int totalDestroyedEnemies = 0;
     private bool hasStartedSpawning = false;
 
     private List<GameObject> thrownObjects = new List<GameObject>();
@@ -32,6 +39,7 @@ public class AutomaticSpawning : MonoBehaviour
     void Start()
     {
         nextSpawnTime = Time.time + initialDelay;
+        UpdateUI();
     }
     
     void Update()
@@ -88,13 +96,14 @@ public class AutomaticSpawning : MonoBehaviour
             
             GameObject enemy = Instantiate(enemyPrefab, spawnPosition, lookRotation);
             
-            // Füge Gegner zur Liste hinzu
             spawnedEnemies.Add(enemy);
             
             EnemyTracker tracker = enemy.AddComponent<EnemyTracker>();
             tracker.spawner = this;
+            tracker.isEnemy = true; // Markiere als echten Gegner
             
             currentEnemyCount++;
+            UpdateUI();
             Debug.Log($"Gegner gespawnt! Aktuelle Anzahl: {currentEnemyCount}/{maxEnemies}");
         }
         else
@@ -103,10 +112,45 @@ public class AutomaticSpawning : MonoBehaviour
         }
     }
     
+    // Wird aufgerufen wenn ein GEGNER zerstört wird
     public void OnEnemyDestroyed()
     {
         currentEnemyCount--;
-        Debug.Log($"Gegner zerstört! Verbleibende Anzahl: {currentEnemyCount}");
+        totalDestroyedEnemies++;
+        UpdateUI();
+        Debug.Log($"Gegner zerstört! Verbleibende: {currentEnemyCount}, Gesamt zerstört: {totalDestroyedEnemies}");
+    }
+    
+    // Wird aufgerufen wenn ein PROJEKTIL zerstört wird
+    public void OnProjectileDestroyed()
+    {
+        currentEnemyCount--;
+        UpdateUI();
+        Debug.Log($"Projektil zerstört! Verbleibende Anzahl: {currentEnemyCount}");
+    }
+    
+    private void UpdateUI()
+    {
+        if (activeEnemiesText != null)
+        {
+            activeEnemiesText.SetText("Aktive Gegner: {0}", currentEnemyCount);
+        }
+        
+        if (destroyedEnemiesTextGameplay != null)
+        {
+            destroyedEnemiesTextGameplay.SetText("{0}", totalDestroyedEnemies);
+        }
+        
+        if (destroyedEnemiesTextEnd != null)
+        {
+            destroyedEnemiesTextEnd.SetText("{0} Gegner erledigt", totalDestroyedEnemies);
+        }
+    }
+    
+    public void UpdateUIForEndScreen()
+    {
+        UpdateUI();
+        Debug.Log($"End-Screen aktualisiert: {totalDestroyedEnemies} Gegner zerstört");
     }
     
     private bool IsPlaneValid(ARPlane plane, Camera camera)
@@ -151,11 +195,9 @@ public class AutomaticSpawning : MonoBehaviour
     
     public void DestroyAllSpawnedObjects()
     {
-        // Deaktiviere Auto-Spawning
         autoSpawn = false;
         hasStartedSpawning = false;
         
-        // Lösche alle geworfenen Objekte
         foreach (GameObject obj in thrownObjects)
         {
             if (obj != null)
@@ -165,18 +207,23 @@ public class AutomaticSpawning : MonoBehaviour
         }
         thrownObjects.Clear();
         
-        // Lösche alle Gegner
         foreach (GameObject enemy in spawnedEnemies)
         {
             if (enemy != null)
             {
+                EnemyTracker tracker = enemy.GetComponent<EnemyTracker>();
+                if (tracker != null)
+                {
+                    tracker.spawner = null; // Trenne Verbindung
+                }
                 Destroy(enemy);
             }
         }
         spawnedEnemies.Clear();
         
-        // Setze Counter zurück
         currentEnemyCount = 0;
+        totalDestroyedEnemies = 0;
+        UpdateUI();
         
         Debug.Log("Alle gespawnten Objekte gelöscht und Auto-Spawning deaktiviert");
     }
@@ -215,12 +262,26 @@ public class AutomaticSpawning : MonoBehaviour
 public class EnemyTracker : MonoBehaviour
 {
     public AutomaticSpawning spawner;
+    public bool isEnemy = true; // true = Gegner, false = Projektil
+    private bool wasKilled = false;
+    
+    public void MarkAsKilled()
+    {
+        wasKilled = true;
+    }
     
     void OnDestroy()
     {
-        if (spawner != null)
+        if (spawner != null && wasKilled)
         {
-            spawner.OnEnemyDestroyed();
+            if (isEnemy)
+            {
+                spawner.OnEnemyDestroyed(); // Zählt nur echte Gegner
+            }
+            else
+            {
+                spawner.OnProjectileDestroyed(); // Projektile zählen nicht
+            }
         }
     }
 }
