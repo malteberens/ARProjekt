@@ -12,6 +12,10 @@ public class HealthManager : MonoBehaviour
     
     [Header("Endscreen Text")]
     public TextMeshProUGUI endscreenText;
+
+    [Header("Referenzen")]
+    //public ARWerfenUnendlich throwingScript; // Dein Wurf-Script
+    public AutomaticSpawning enemySpawner; // Dein Enemy-Spawner (falls vorhanden)
     
     private int currentHealth = 3;
     private int totalLostHearts = 0;
@@ -85,6 +89,10 @@ public class HealthManager : MonoBehaviour
     void GameOver()
     {
         Debug.Log("Game Over!");
+        if (enemySpawner != null)
+        {
+            enemySpawner.DestroyAllSpawnedObjects();
+        }
         
         if (gameplayCanvas != null)
             gameplayCanvas.SetActive(false);

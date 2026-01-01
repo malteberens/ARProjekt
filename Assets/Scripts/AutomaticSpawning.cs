@@ -18,17 +18,19 @@ public class AutomaticSpawning : MonoBehaviour
     
     [Header("Automatisches Spawning")]
     [SerializeField] private bool autoSpawn = true;
-    [SerializeField] private float spawnInterval = 3f; // Sekunden zwischen Spawns
-    [SerializeField] private int maxEnemies = 5; // Maximale Anzahl gleichzeitiger Gegner
-    [SerializeField] private float initialDelay = 2f; // Wartezeit vor dem ersten Spawn
+    [SerializeField] private float spawnInterval = 3f;
+    [SerializeField] private int maxEnemies = 5;
+    [SerializeField] private float initialDelay = 2f;
     
     private float nextSpawnTime;
     private int currentEnemyCount = 0;
     private bool hasStartedSpawning = false;
+
+    private List<GameObject> thrownObjects = new List<GameObject>();
+    private List<GameObject> spawnedEnemies = new List<GameObject>();
     
     void Start()
     {
-        // Setze die Zeit für den ersten Spawn
         nextSpawnTime = Time.time + initialDelay;
     }
     
@@ -37,14 +39,12 @@ public class AutomaticSpawning : MonoBehaviour
         if (!autoSpawn)
             return;
         
-        // Warte, bis genug Ebenen erkannt wurden
         if (!hasStartedSpawning && planeManager.trackables.count >= 1)
         {
             hasStartedSpawning = true;
             Debug.Log("AR-Ebenen erkannt. Spawning startet.");
         }
         
-        // Spawne automatisch Gegner
         if (hasStartedSpawning && Time.time >= nextSpawnTime && currentEnemyCount < maxEnemies)
         {
             SpawnEnemy();
@@ -54,7 +54,6 @@ public class AutomaticSpawning : MonoBehaviour
     
     public void SpawnEnemy()
     {
-        // Sammle nur geeignete horizontale Ebenen
         List<ARPlane> suitablePlanes = new List<ARPlane>();
         Camera arCamera = Camera.main;
         
@@ -73,19 +72,15 @@ public class AutomaticSpawning : MonoBehaviour
             return;
         }
         
-        // Sortiere Ebenen nach Größe
         suitablePlanes = suitablePlanes.OrderByDescending(p => p.size.x * p.size.y).ToList();
         
-        // Wähle eine der größeren Ebenen
         int planeIndex = Random.Range(0, Mathf.Max(1, suitablePlanes.Count / 2));
         ARPlane selectedPlane = suitablePlanes[planeIndex];
         
-        // Spawn-Position berechnen
         Vector3 spawnPosition = GetValidSpawnPosition(selectedPlane, arCamera);
         
         if (spawnPosition != Vector3.zero)
         {
-            // Spawne den Gegner mit Rotation zur Kamera
             Quaternion lookRotation = Quaternion.LookRotation(
                 (arCamera.transform.position - spawnPosition).normalized
             );
@@ -93,7 +88,9 @@ public class AutomaticSpawning : MonoBehaviour
             
             GameObject enemy = Instantiate(enemyPrefab, spawnPosition, lookRotation);
             
-            // Füge Enemy-Tracker hinzu
+            // Füge Gegner zur Liste hinzu
+            spawnedEnemies.Add(enemy);
+            
             EnemyTracker tracker = enemy.AddComponent<EnemyTracker>();
             tracker.spawner = this;
             
@@ -106,7 +103,6 @@ public class AutomaticSpawning : MonoBehaviour
         }
     }
     
-    // Wird vom EnemyTracker aufgerufen, wenn ein Gegner zerstört wird
     public void OnEnemyDestroyed()
     {
         currentEnemyCount--;
@@ -153,6 +149,46 @@ public class AutomaticSpawning : MonoBehaviour
         return Vector3.zero;
     }
     
+    public void DestroyAllSpawnedObjects()
+    {
+        // Deaktiviere Auto-Spawning
+        autoSpawn = false;
+        hasStartedSpawning = false;
+        
+        // Lösche alle geworfenen Objekte
+        foreach (GameObject obj in thrownObjects)
+        {
+            if (obj != null)
+            {
+                Destroy(obj);
+            }
+        }
+        thrownObjects.Clear();
+        
+        // Lösche alle Gegner
+        foreach (GameObject enemy in spawnedEnemies)
+        {
+            if (enemy != null)
+            {
+                Destroy(enemy);
+            }
+        }
+        spawnedEnemies.Clear();
+        
+        // Setze Counter zurück
+        currentEnemyCount = 0;
+        
+        Debug.Log("Alle gespawnten Objekte gelöscht und Auto-Spawning deaktiviert");
+    }
+    
+    public void EnableAutoSpawning()
+    {
+        autoSpawn = true;
+        hasStartedSpawning = false;
+        nextSpawnTime = Time.time + initialDelay;
+        Debug.Log("Auto-Spawning aktiviert");
+    }
+    
     private void OnDrawGizmos()
     {
         if (planeManager == null || !Application.isPlaying)
@@ -176,7 +212,6 @@ public class AutomaticSpawning : MonoBehaviour
     }
 }
 
-// Hilfsklasse zum Tracken von Gegnern
 public class EnemyTracker : MonoBehaviour
 {
     public AutomaticSpawning spawner;
