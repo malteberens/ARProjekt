@@ -19,15 +19,7 @@ public class AutomaticSpawning : MonoBehaviour
     [SerializeField] private float spawnHeightOffset = 0.1f;
     
     [Header("Automatisches Spawning")]
-    [SerializeField] private bool autoSpawn = true;
-    [SerializeField] private float spawnInterval = 3f;
-    [SerializeField] private int maxEnemies = 5;
-    [SerializeField] private float initialDelay = 2f;
-    
-    [Header("UI Textfelder")]
-    [SerializeField] private TextMeshProUGUI activeEnemiesText;
-    [SerializeField] private TextMeshProUGUI destroyedEnemiesTextGameplay;
-    [SerializeField] private TextMeshProUGUI destroyedEnemiesTextEnd;
+    [SerializeField] private bool autoSpawn = false;
     [SerializeField] private float spawnInterval = 3f;
     [SerializeField] private int maxEnemies = 5;
     [SerializeField] private float initialDelay = 2f;
@@ -40,11 +32,7 @@ public class AutomaticSpawning : MonoBehaviour
     private float nextSpawnTime;
     private int currentEnemyCount = 0;
     private int totalDestroyedEnemies = 0;
-    private int totalDestroyedEnemies = 0;
     private bool hasStartedSpawning = false;
-
-    private List<GameObject> thrownObjects = new List<GameObject>();
-    private List<GameObject> spawnedEnemies = new List<GameObject>();
 
     private List<GameObject> thrownObjects = new List<GameObject>();
     private List<GameObject> spawnedEnemies = new List<GameObject>();
