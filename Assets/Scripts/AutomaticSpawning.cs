@@ -4,6 +4,7 @@ using UnityEngine.XR.ARSubsystems;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using TMPro;
 
 public class AutomaticSpawning : MonoBehaviour
 {
@@ -27,11 +28,23 @@ public class AutomaticSpawning : MonoBehaviour
     [SerializeField] private TextMeshProUGUI activeEnemiesText;
     [SerializeField] private TextMeshProUGUI destroyedEnemiesTextGameplay;
     [SerializeField] private TextMeshProUGUI destroyedEnemiesTextEnd;
+    [SerializeField] private float spawnInterval = 3f;
+    [SerializeField] private int maxEnemies = 5;
+    [SerializeField] private float initialDelay = 2f;
+    
+    [Header("UI Textfelder")]
+    [SerializeField] private TextMeshProUGUI activeEnemiesText;
+    [SerializeField] private TextMeshProUGUI destroyedEnemiesTextGameplay;
+    [SerializeField] private TextMeshProUGUI destroyedEnemiesTextEnd;
     
     private float nextSpawnTime;
     private int currentEnemyCount = 0;
     private int totalDestroyedEnemies = 0;
+    private int totalDestroyedEnemies = 0;
     private bool hasStartedSpawning = false;
+
+    private List<GameObject> thrownObjects = new List<GameObject>();
+    private List<GameObject> spawnedEnemies = new List<GameObject>();
 
     private List<GameObject> thrownObjects = new List<GameObject>();
     private List<GameObject> spawnedEnemies = new List<GameObject>();
@@ -39,6 +52,7 @@ public class AutomaticSpawning : MonoBehaviour
     void Start()
     {
         nextSpawnTime = Time.time + initialDelay;
+        UpdateUI();
         UpdateUI();
     }
     
@@ -98,11 +112,15 @@ public class AutomaticSpawning : MonoBehaviour
             
             spawnedEnemies.Add(enemy);
             
+            spawnedEnemies.Add(enemy);
+            
             EnemyTracker tracker = enemy.AddComponent<EnemyTracker>();
             tracker.spawner = this;
             tracker.isEnemy = true; // Markiere als echten Gegner
+            tracker.isEnemy = true; // Markiere als echten Gegner
             
             currentEnemyCount++;
+            UpdateUI();
             UpdateUI();
             Debug.Log($"Gegner gespawnt! Aktuelle Anzahl: {currentEnemyCount}/{maxEnemies}");
         }
@@ -113,11 +131,12 @@ public class AutomaticSpawning : MonoBehaviour
     }
     
     // Wird aufgerufen wenn ein GEGNER zerstört wird
+    // Wird aufgerufen wenn ein GEGNER zerstört wird
     public void OnEnemyDestroyed()
     {
+        UpdateUI();
         currentEnemyCount--;
         totalDestroyedEnemies++;
-        UpdateUI();
         Debug.Log($"Gegner zerstört! Verbleibende: {currentEnemyCount}, Gesamt zerstört: {totalDestroyedEnemies}");
     }
     
@@ -144,6 +163,11 @@ public class AutomaticSpawning : MonoBehaviour
         if (destroyedEnemiesTextEnd != null)
         {
             destroyedEnemiesTextEnd.SetText("{0} Gegner erledigt", totalDestroyedEnemies);
+            Debug.Log("End Text aktualisiert: " + totalDestroyedEnemies);
+        }
+        else
+        {
+            Debug.LogWarning("destroyedEnemiesTextEnd ist NULL!");
         }
     }
     
@@ -195,6 +219,7 @@ public class AutomaticSpawning : MonoBehaviour
     
     public void DestroyAllSpawnedObjects()
     {
+        UpdateUI();
         autoSpawn = false;
         hasStartedSpawning = false;
         
@@ -223,7 +248,6 @@ public class AutomaticSpawning : MonoBehaviour
         
         currentEnemyCount = 0;
         totalDestroyedEnemies = 0;
-        UpdateUI();
         
         Debug.Log("Alle gespawnten Objekte gelöscht und Auto-Spawning deaktiviert");
     }
@@ -262,26 +286,19 @@ public class AutomaticSpawning : MonoBehaviour
 public class EnemyTracker : MonoBehaviour
 {
     public AutomaticSpawning spawner;
-    public bool isEnemy = true; // true = Gegner, false = Projektil
-    private bool wasKilled = false;
-    
-    public void MarkAsKilled()
-    {
-        wasKilled = true;
-    }
+    public bool isEnemy = true;
     
     void OnDestroy()
     {
-        if (spawner != null && wasKilled)
+        // Ohne wasKilled-Check - funktioniert immer
+        if (spawner != null && isEnemy)
         {
-            if (isEnemy)
-            {
-                spawner.OnEnemyDestroyed(); // Zählt nur echte Gegner
-            }
-            else
-            {
-                spawner.OnProjectileDestroyed(); // Projektile zählen nicht
-            }
+            spawner.OnEnemyDestroyed();
+        }
+        else if (spawner != null && !isEnemy)
+        {
+            spawner.OnProjectileDestroyed();
         }
     }
 }
+
