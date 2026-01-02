@@ -9,6 +9,8 @@ public class HealthManager : MonoBehaviour
     [Header("Canvas")]
     public GameObject gameplayCanvas;
     public GameObject endCanvas;
+
+    public GameTimer gameTimer;
     
     [Header("Endscreen Text")]
     public TextMeshProUGUI endscreenText;
@@ -127,11 +129,22 @@ public class HealthManager : MonoBehaviour
         if (endCanvas != null)
             endCanvas.SetActive(false);
     }
+
+    public int GetCurrentHealth()
+    {
+        return currentHealth;
+    }
     
     // ÖFFENTLICHE RESET-METHODE (wird von ResetManager aufgerufen)
     public void ResetGame()
     {
         Debug.Log("HealthManager: Reset wird durchgeführt");
+
+         if (gameTimer != null)
+            {
+            gameTimer.StopTimer();
+            Debug.Log("Timer gestoppt");
+            }
         
         // Events neu subscribed
         UnsubscribeFromEvents();
