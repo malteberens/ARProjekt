@@ -11,7 +11,7 @@ public class TextEditor : MonoBehaviour
         if (textField != null)
         {
             textField.gameObject.SetActive(true);  // Erst aktivieren
-            textField.text = "Neuer Text";          // Dann bearbeiten
+            textField.text = "0";          // Dann bearbeiten
         }
     }
 }
