@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class ARWerfenUnendlich : MonoBehaviour
 {
@@ -44,13 +45,29 @@ public class ARWerfenUnendlich : MonoBehaviour
 
     private void Update()
     {
-        // Wir prüfen nur noch auf Cooldown, nicht mehr auf die Anzahl der Bälle
         bool isInputDetected = touchAction.WasPressedThisFrame() || mouseAction.WasPressedThisFrame();
 
-        if (isInputDetected && readyToThrow)
-        {
-            ThrowObject();
-        }
+if (isInputDetected && readyToThrow)
+{
+    // Prüfe ob Touch auf UI ist (nur bei Touch-Eingaben)
+    bool isTouchOnUI = false;
+    if (Input.touchCount > 0)
+    {
+        Touch touch = Input.GetTouch(0);
+        isTouchOnUI = EventSystem.current.IsPointerOverGameObject(touch.fingerId);
+    }
+    // Prüfe ob Maus auf UI ist (nur bei Maus-Eingaben)
+    else if (mouseAction.WasPressedThisFrame())
+    {
+        isTouchOnUI = EventSystem.current.IsPointerOverGameObject();
+    }
+
+    if (!isTouchOnUI)
+    {
+        ThrowObject();
+    }
+}
+
     }
 
     private void ThrowObject()
