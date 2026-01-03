@@ -90,6 +90,7 @@ public class HealthManager : MonoBehaviour
     
     void GameOver()
     {
+        gameTimer.StopTimer();
         Debug.Log("Game Over!");
         if (enemySpawner != null)
         {
