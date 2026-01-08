@@ -41,7 +41,6 @@ public class AutomaticSpawning : MonoBehaviour
     {
         nextSpawnTime = Time.time + initialDelay;
         UpdateUI();
-        UpdateUI();
     }
     
     void Update()
@@ -100,15 +99,13 @@ public class AutomaticSpawning : MonoBehaviour
             
             spawnedEnemies.Add(enemy);
             
-            spawnedEnemies.Add(enemy);
             
             EnemyTracker tracker = enemy.AddComponent<EnemyTracker>();
             tracker.spawner = this;
             tracker.isEnemy = true; // Markiere als echten Gegner
-            tracker.isEnemy = true; // Markiere als echten Gegner
+            
             
             currentEnemyCount++;
-            UpdateUI();
             UpdateUI();
             Debug.Log($"Gegner gespawnt! Aktuelle Anzahl: {currentEnemyCount}/{maxEnemies}");
         }
@@ -118,7 +115,7 @@ public class AutomaticSpawning : MonoBehaviour
         }
     }
     
-    // Wird aufgerufen wenn ein GEGNER zerstört wird
+    
     // Wird aufgerufen wenn ein GEGNER zerstört wird
     public void OnEnemyDestroyed()
     {
