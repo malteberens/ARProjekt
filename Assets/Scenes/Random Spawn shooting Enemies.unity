@@ -2106,7 +2106,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_PlanePrefab: {fileID: 827611755980877401, guid: 9abf47b6e691b4cb798fc5d246479da5, type: 3}
-  m_DetectionMode: 1
+  m_DetectionMode: -1
 --- !u!114 &2512387470422636671
 MonoBehaviour:
   m_ObjectHideFlags: 0
