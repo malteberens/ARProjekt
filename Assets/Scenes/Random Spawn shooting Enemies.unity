@@ -2074,6 +2074,18 @@ PrefabInstance:
       value: EnemySpawner
       objectReference: {fileID: 0}
     - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
+      propertyPath: autoSpawn
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
+      propertyPath: edgeMargin
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
+      propertyPath: minPlaneSize
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
       propertyPath: planeManager
       value: 
       objectReference: {fileID: 2512387470422636670}
