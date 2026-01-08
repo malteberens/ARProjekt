@@ -22,8 +22,8 @@ public class ARPlayerCollision : MonoBehaviour
         {
             CapsuleCollider capsule = gameObject.AddComponent<CapsuleCollider>();
             capsule.radius = 0.3f;
-            capsule.height = 1.8f;
-            capsule.center = new Vector3(0, 0.9f, 0);
+            capsule.height = 0f;
+            capsule.center = new Vector3(0, 0, 0);
             capsule.isTrigger = true;
             Debug.Log("Collider hinzugefügt (als Trigger)");
         }
