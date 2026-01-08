@@ -452,7 +452,7 @@ MonoBehaviour:
   maxDistanceFromCamera: 5
   minPlaneSize: 0.5
   edgeMargin: 0.2
-  spawnHeightOffset: 0
+  spawnHeightOffset: 0.5
   autoSpawn: 1
   spawnInterval: 5
   maxEnemies: 3
