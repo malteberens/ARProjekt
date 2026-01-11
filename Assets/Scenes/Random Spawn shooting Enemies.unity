@@ -745,6 +745,38 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 162324949148326189, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
   m_PrefabInstance: {fileID: 1391539733}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &856443891 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3780544869705147231, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
+  m_PrefabInstance: {fileID: 1391539733}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &856443895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856443891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Texture: {fileID: 2800000, guid: 9ee137293631b9e46b1a401b72b130a4, type: 3}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
 --- !u!224 &1139495181 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2567373671165420152, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
@@ -975,6 +1007,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -325
       objectReference: {fileID: 0}
+    - target: {fileID: 6587705113647502129, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7019148957293032008, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -995,6 +1031,10 @@ PrefabInstance:
       propertyPath: m_fontColor.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7560526664964132428, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 8164650285190468862, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -1003,7 +1043,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6587705113647502129, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 2567373671165420152, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
@@ -1012,7 +1053,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2567373671165420152, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 397963961}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3780544869705147231, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 856443895}
   m_SourcePrefab: {fileID: 100100000, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
 --- !u!1 &1392564226 stripped
 GameObject:
@@ -1426,7 +1470,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1862712201
 RectTransform:
   m_ObjectHideFlags: 0
