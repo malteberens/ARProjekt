@@ -15,6 +15,7 @@ public class ARWerfenUnendlich : MonoBehaviour
 
     [Header("Einstellungen")]
     [SerializeField] private float throwCooldown = 0.2f; // Kleinerer Cooldown für mehr Action
+    public GameObject activeCanvas;
 
     [Header("Wurf-Physik")]
     [SerializeField] private float throwForce = 15f;
@@ -45,28 +46,35 @@ public class ARWerfenUnendlich : MonoBehaviour
 
     private void Update()
     {
+        // Prüft Canvas-Status
+        bool isCanvasActive = (activeCanvas != null && activeCanvas.activeSelf);
+        if (!isCanvasActive)
+        {
+            return;
+        }
+
         bool isInputDetected = touchAction.WasPressedThisFrame() || mouseAction.WasPressedThisFrame();
 
-if (isInputDetected && readyToThrow)
-{
-    // Prüfe ob Touch auf UI ist (nur bei Touch-Eingaben)
-    bool isTouchOnUI = false;
-    if (Input.touchCount > 0)
-    {
-        Touch touch = Input.GetTouch(0);
-        isTouchOnUI = EventSystem.current.IsPointerOverGameObject(touch.fingerId);
-    }
-    // Prüfe ob Maus auf UI ist (nur bei Maus-Eingaben)
-    else if (mouseAction.WasPressedThisFrame())
-    {
-        isTouchOnUI = EventSystem.current.IsPointerOverGameObject();
-    }
+        if (isInputDetected && readyToThrow)
+        {
+            // Prüfe ob Touch auf UI ist (nur bei Touch-Eingaben)
+            bool isTouchOnUI = false;
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+                isTouchOnUI = EventSystem.current.IsPointerOverGameObject(touch.fingerId);
+            }
+            // Prüfe ob Maus auf UI ist (nur bei Maus-Eingaben)
+            else if (mouseAction.WasPressedThisFrame())
+            {
+                isTouchOnUI = EventSystem.current.IsPointerOverGameObject();
+            }
 
-    if (!isTouchOnUI)
-    {
-        ThrowObject();
-    }
-}
+            if (!isTouchOnUI)
+            {
+                ThrowObject();
+            }
+        }
 
     }
 

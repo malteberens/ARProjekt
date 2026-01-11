@@ -45,6 +45,7 @@ public class AutomaticSpawning : MonoBehaviour
     
     void Update()
     {
+        //UpdateUI();
         if (!autoSpawn)
             return;
         
@@ -119,9 +120,9 @@ public class AutomaticSpawning : MonoBehaviour
     // Wird aufgerufen wenn ein GEGNER zerstört wird
     public void OnEnemyDestroyed()
     {
-        UpdateUI();
         currentEnemyCount--;
         totalDestroyedEnemies++;
+        UpdateUI();
         Debug.Log($"Gegner zerstört! Verbleibende: {currentEnemyCount}, Gesamt zerstört: {totalDestroyedEnemies}");
     }
     
@@ -239,6 +240,7 @@ public class AutomaticSpawning : MonoBehaviour
     
     public void EnableAutoSpawning()
     {
+        UpdateUI();
         autoSpawn = true;
         hasStartedSpawning = false;
         nextSpawnTime = Time.time + initialDelay;
