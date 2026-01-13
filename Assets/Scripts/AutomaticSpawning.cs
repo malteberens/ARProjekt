@@ -76,6 +76,7 @@ public class AutomaticSpawning : MonoBehaviour
             }
         }
         
+        
         if (suitablePlanes.Count == 0)
         {
             Debug.LogWarning("Keine geeigneten Ebenen zum Spawnen gefunden!");

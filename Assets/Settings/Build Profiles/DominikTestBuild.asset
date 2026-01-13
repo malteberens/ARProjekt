@@ -172,6 +172,14 @@ MonoBehaviour:
     - line: '|   preloadedAssets:'
     - line: '|   - {fileID: -944628639613478452, guid: f71a1d92b90f945289d1e815b723b5dc,
         type: 3}'
+    - line: '|   - {fileID: 4800000, guid: e7c77f6eaab324a819efdc13b8125a39, type:
+        3}'
+    - line: '|   - {fileID: 4800000, guid: 6743a50a812740be8c0aa3fccc46fae9, type:
+        3}'
+    - line: '|   - {fileID: 8792172334962700932, guid: 3fd4fc0127790db4bae83f7b77da8d45,
+        type: 2}'
+    - line: '|   - {fileID: 11400000, guid: c199e683398494f32b4cde18e73ab731, type:
+        2}'
     - line: '|   metroInputSource: 0'
     - line: '|   wsaTransparentSwapchain: 0'
     - line: '|   m_HolographicPauseOnTrackingLoss: 1'
