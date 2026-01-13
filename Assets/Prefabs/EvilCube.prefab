@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7357653953804275573}
   - component: {fileID: 182241115624814050}
   - component: {fileID: 1604300695853579181}
+  - component: {fileID: 6711591566509699579}
   m_Layer: 0
   m_Name: EvilCube
   m_TagString: Enemy
@@ -246,6 +247,20 @@ MonoBehaviour:
   shootInterval: 2
   ballSpeed: 1
   spawnDistance: 1
+--- !u!114 &6711591566509699579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 613292779795284151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76876a8d241264322b158cd31cbddf45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
+  bewegungsGeschwindigkeit: 0.5
+  bewegungsBereich: 0.3
 --- !u!1 &2317233515023633908
 GameObject:
   m_ObjectHideFlags: 0
