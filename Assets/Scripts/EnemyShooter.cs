@@ -62,8 +62,8 @@ public class EnemyShooter : MonoBehaviour
             Debug.LogWarning("Das Ball-Prefab benötigt eine Rigidbody-Komponente!");
         }
         
-        // Optional: Zerstöre die Kugel nach 5 Sekunden
-        Destroy(ball, 5f);
+        // Optional: Zerstöre die Kugel nach 3 Sekunden
+        Destroy(ball, 3f);
     }
 
     // Optional: Visualisiere die Schussrichtung im Editor
@@ -74,5 +74,13 @@ public class EnemyShooter : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, player.position);
         }
+    }
+    
+    // Erhöhung der Schussrate
+    public void IncreaseFireRate(float NewshootInterval)
+    {
+        shootInterval -= NewshootInterval; // Kleinere Zeit = schnelle
+        shootInterval = Mathf.Max(0.1f, shootInterval);
+        Debug.Log($"Neue Schussrate: {shootInterval}");
     }
 }

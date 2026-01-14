@@ -261,6 +261,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMovement
   bewegungsGeschwindigkeit: 0.5
   bewegungsBereich: 0.3
+  arKamera: {fileID: 0}
 --- !u!1 &2317233515023633908
 GameObject:
   m_ObjectHideFlags: 0

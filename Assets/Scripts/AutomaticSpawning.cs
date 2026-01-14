@@ -4,7 +4,6 @@ using UnityEngine.XR.ARSubsystems;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using TMPro;
 
 public class AutomaticSpawning : MonoBehaviour
 {
@@ -24,6 +23,12 @@ public class AutomaticSpawning : MonoBehaviour
     [SerializeField] private int maxEnemies = 5;
     [SerializeField] private float initialDelay = 2f;
     
+    [Header("Sichtfeld-Kontrolle")]
+    [SerializeField] private bool requireSpawnInViewport = true; // Nur im Sichtfeld spawnen
+    [SerializeField] private float viewportMargin = 0.1f; // 10% Rand vom Bildschirmrand
+    [SerializeField] private float despawnTime = 5f; // Zeit außerhalb des Sichtfelds bis Despawn
+    [SerializeField] private bool enableDespawning = true; // Despawning aktivieren
+    
     [Header("UI Textfelder")]
     [SerializeField] private TextMeshProUGUI activeEnemiesText;
     [SerializeField] private TextMeshProUGUI destroyedEnemiesTextGameplay;
@@ -37,6 +42,9 @@ public class AutomaticSpawning : MonoBehaviour
     private List<GameObject> thrownObjects = new List<GameObject>();
     private List<GameObject> spawnedEnemies = new List<GameObject>();
     
+    // Tracking für Despawning
+    private Dictionary<GameObject, float> enemyOutOfViewTime = new Dictionary<GameObject, float>();
+    
     void Start()
     {
         nextSpawnTime = Time.time + initialDelay;
@@ -45,7 +53,6 @@ public class AutomaticSpawning : MonoBehaviour
     
     void Update()
     {
-        //UpdateUI();
         if (!autoSpawn)
             return;
         
@@ -60,6 +67,95 @@ public class AutomaticSpawning : MonoBehaviour
             SpawnEnemy();
             nextSpawnTime = Time.time + spawnInterval;
         }
+        
+        // Überprüfe Despawning
+        if (enableDespawning)
+        {
+            CheckForDespawning();
+        }
+    }
+    
+    private void CheckForDespawning()
+    {
+        Camera arCamera = Camera.main;
+        if (arCamera == null) return;
+        
+        List<GameObject> toRemove = new List<GameObject>();
+        
+        foreach (GameObject enemy in spawnedEnemies)
+        {
+            if (enemy == null) continue;
+            
+            bool isInViewport = IsPositionInViewport(enemy.transform.position, arCamera);
+            
+            if (!isInViewport)
+            {
+                // Gegner ist außerhalb des Sichtfelds
+                if (!enemyOutOfViewTime.ContainsKey(enemy))
+                {
+                    enemyOutOfViewTime[enemy] = Time.time;
+                }
+                else
+                {
+                    // Prüfe ob genug Zeit vergangen ist
+                    float timeOutOfView = Time.time - enemyOutOfViewTime[enemy];
+                    if (timeOutOfView >= despawnTime)
+                    {
+                        Debug.Log($"Gegner despawnt nach {timeOutOfView:F1}s außerhalb des Sichtfelds");
+                        toRemove.Add(enemy);
+                    }
+                }
+            }
+            else
+            {
+                // Gegner ist wieder im Sichtfeld, Timer zurücksetzen
+                if (enemyOutOfViewTime.ContainsKey(enemy))
+                {
+                    enemyOutOfViewTime.Remove(enemy);
+                }
+            }
+        }
+        
+        // Entferne Gegner die zu lange außerhalb waren
+        foreach (GameObject enemy in toRemove)
+        {
+            DespawnEnemy(enemy);
+        }
+    }
+    
+    private void DespawnEnemy(GameObject enemy)
+    {
+        if (enemy == null) return;
+        
+        spawnedEnemies.Remove(enemy);
+        enemyOutOfViewTime.Remove(enemy);
+        
+        // Entferne Tracker-Komponente um OnEnemyDestroyed zu verhindern
+        EnemyTracker tracker = enemy.GetComponent<EnemyTracker>();
+        if (tracker != null)
+        {
+            tracker.spawner = null;
+        }
+        
+        Destroy(enemy);
+        currentEnemyCount--;
+        UpdateUI();
+    }
+    
+    private bool IsPositionInViewport(Vector3 worldPosition, Camera camera)
+    {
+        Vector3 viewportPoint = camera.WorldToViewportPoint(worldPosition);
+        
+        // Prüfe ob Position hinter der Kamera liegt
+        if (viewportPoint.z < 0)
+            return false;
+        
+        // Prüfe ob Position im Sichtfeld mit Margin liegt
+        float minViewport = viewportMargin;
+        float maxViewport = 1f - viewportMargin;
+        
+        return viewportPoint.x >= minViewport && viewportPoint.x <= maxViewport &&
+               viewportPoint.y >= minViewport && viewportPoint.y <= maxViewport;
     }
     
     public void SpawnEnemy()
@@ -76,7 +172,6 @@ public class AutomaticSpawning : MonoBehaviour
             }
         }
         
-        
         if (suitablePlanes.Count == 0)
         {
             Debug.LogWarning("Keine geeigneten Ebenen zum Spawnen gefunden!");
@@ -85,40 +180,45 @@ public class AutomaticSpawning : MonoBehaviour
         
         suitablePlanes = suitablePlanes.OrderByDescending(p => p.size.x * p.size.y).ToList();
         
-        int planeIndex = Random.Range(0, Mathf.Max(1, suitablePlanes.Count / 2));
-        ARPlane selectedPlane = suitablePlanes[planeIndex];
+        // Versuche mehrmals eine Position im Sichtfeld zu finden
+        int maxAttempts = requireSpawnInViewport ? 20 : 1;
         
-        Vector3 spawnPosition = GetValidSpawnPosition(selectedPlane, arCamera);
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            int planeIndex = Random.Range(0, Mathf.Max(1, suitablePlanes.Count / 2));
+            ARPlane selectedPlane = suitablePlanes[planeIndex];
+            
+            Vector3 spawnPosition = GetValidSpawnPosition(selectedPlane, arCamera);
+            
+            if (spawnPosition != Vector3.zero)
+            {
+                // Prüfe ob Position im Sichtfeld liegt (falls erforderlich)
+                if (!requireSpawnInViewport || IsPositionInViewport(spawnPosition, arCamera))
+                {
+                    Quaternion lookRotation = Quaternion.LookRotation(
+                        (arCamera.transform.position - spawnPosition).normalized
+                    );
+                    lookRotation = Quaternion.Euler(0, lookRotation.eulerAngles.y, 0);
+                    
+                    GameObject enemy = Instantiate(enemyPrefab, spawnPosition, lookRotation);
+                    
+                    spawnedEnemies.Add(enemy);
+                    
+                    EnemyTracker tracker = enemy.AddComponent<EnemyTracker>();
+                    tracker.spawner = this;
+                    tracker.isEnemy = true;
+                    
+                    currentEnemyCount++;
+                    UpdateUI();
+                    Debug.Log($"Gegner im Sichtfeld gespawnt! Aktuelle Anzahl: {currentEnemyCount}/{maxEnemies}");
+                    return;
+                }
+            }
+        }
         
-        if (spawnPosition != Vector3.zero)
-        {
-            Quaternion lookRotation = Quaternion.LookRotation(
-                (arCamera.transform.position - spawnPosition).normalized
-            );
-            lookRotation = Quaternion.Euler(0, lookRotation.eulerAngles.y, 0);
-            
-            GameObject enemy = Instantiate(enemyPrefab, spawnPosition, lookRotation);
-            
-            spawnedEnemies.Add(enemy);
-            
-            
-            EnemyTracker tracker = enemy.AddComponent<EnemyTracker>();
-            tracker.spawner = this;
-            tracker.isEnemy = true; // Markiere als echten Gegner
-            
-            
-            currentEnemyCount++;
-            UpdateUI();
-            Debug.Log($"Gegner gespawnt! Aktuelle Anzahl: {currentEnemyCount}/{maxEnemies}");
-        }
-        else
-        {
-            Debug.LogWarning("Keine gültige Spawn-Position gefunden!");
-        }
+        Debug.LogWarning("Keine gültige Spawn-Position im Sichtfeld gefunden!");
     }
     
-    
-    // Wird aufgerufen wenn ein GEGNER zerstört wird
     public void OnEnemyDestroyed()
     {
         currentEnemyCount--;
@@ -127,7 +227,6 @@ public class AutomaticSpawning : MonoBehaviour
         Debug.Log($"Gegner zerstört! Verbleibende: {currentEnemyCount}, Gesamt zerstört: {totalDestroyedEnemies}");
     }
     
-    // Wird aufgerufen wenn ein PROJEKTIL zerstört wird
     public void OnProjectileDestroyed()
     {
         currentEnemyCount--;
@@ -150,11 +249,6 @@ public class AutomaticSpawning : MonoBehaviour
         if (destroyedEnemiesTextEnd != null)
         {
             destroyedEnemiesTextEnd.SetText("{0} Gegner erledigt", totalDestroyedEnemies);
-            Debug.Log("End Text aktualisiert: " + totalDestroyedEnemies);
-        }
-        else
-        {
-            Debug.LogWarning("destroyedEnemiesTextEnd ist NULL!");
         }
     }
     
@@ -226,12 +320,13 @@ public class AutomaticSpawning : MonoBehaviour
                 EnemyTracker tracker = enemy.GetComponent<EnemyTracker>();
                 if (tracker != null)
                 {
-                    tracker.spawner = null; // Trenne Verbindung
+                    tracker.spawner = null;
                 }
                 Destroy(enemy);
             }
         }
         spawnedEnemies.Clear();
+        enemyOutOfViewTime.Clear();
         
         currentEnemyCount = 0;
         totalDestroyedEnemies = 0;
@@ -278,7 +373,6 @@ public class EnemyTracker : MonoBehaviour
     
     void OnDestroy()
     {
-        // Ohne wasKilled-Check - funktioniert immer
         if (spawner != null && isEnemy)
         {
             spawner.OnEnemyDestroyed();
@@ -289,4 +383,3 @@ public class EnemyTracker : MonoBehaviour
         }
     }
 }
-

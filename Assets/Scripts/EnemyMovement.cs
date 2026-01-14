@@ -9,6 +9,9 @@ public class EnemyMovement : MonoBehaviour
     [Header("Kamera Referenz")]
     [SerializeField] private Camera arKamera; // AR-Kamera (meist die Hauptkamera)
     
+    [Header("Difficulty Settings")]
+    [SerializeField] private bool startDisabled = true; // Startet deaktiviert bis DifficultyManager aktiviert
+    
     private Vector3 startPosition;
     private float bewegungsOffset = 0f;
     private bool bewegtNachRechts = true;
@@ -23,6 +26,22 @@ public class EnemyMovement : MonoBehaviour
         
         // Speichere die Startposition (Weltkoordinaten)
         startPosition = transform.position;
+        
+        // Prüfe ob Bewegung bereits global aktiviert wurde
+        if (startDisabled)
+        {
+            DifficultyManager diffManager = FindObjectOfType<DifficultyManager>();
+            if (diffManager != null && diffManager.IsMovementActive())
+            {
+                this.enabled = true;
+                Debug.Log("Gegner gespawnt - Bewegung bereits aktiv!");
+            }
+            else
+            {
+                this.enabled = false;
+                Debug.Log("Gegner gespawnt - Bewegung noch deaktiviert");
+            }
+        }
     }
 
     void Update()

@@ -2144,6 +2144,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemySpawner
       objectReference: {fileID: 0}
+    - target: {fileID: 555608686300836473, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
+      propertyPath: enemiesNeededForMovement
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
       propertyPath: autoSpawn
       value: 0
@@ -2151,6 +2155,10 @@ PrefabInstance:
     - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
       propertyPath: edgeMargin
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
+      propertyPath: despawnTime
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
       propertyPath: minPlaneSize
@@ -2162,6 +2170,14 @@ PrefabInstance:
       objectReference: {fileID: 2512387470422636670}
     - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
       propertyPath: spawnHeightOffset
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
+      propertyPath: maxDistanceFromCamera
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
+      propertyPath: minDistanceFromCamera
       value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}

@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4098964458972786158}
   - component: {fileID: 1852312753387309095}
+  - component: {fileID: 555608686300836473}
   m_Layer: 0
-  m_Name: EnemySpawner 1
+  m_Name: EnemySpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,6 +56,25 @@ MonoBehaviour:
   spawnInterval: 5
   maxEnemies: 3
   initialDelay: 2
+  requireSpawnInViewport: 1
+  viewportMargin: 0.1
+  despawnTime: 5
+  enableDespawning: 1
   activeEnemiesText: {fileID: 0}
   destroyedEnemiesTextGameplay: {fileID: 0}
   destroyedEnemiesTextEnd: {fileID: 0}
+--- !u!114 &555608686300836473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205731490227140388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f447403c206ba4fa2b2d359bb9b4d964, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DifficultyManager
+  spawningScript: {fileID: 0}
+  enemiesNeededForMovement: 5
+  showDebugMessages: 1
