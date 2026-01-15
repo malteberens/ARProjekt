@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Random Spawn shooting Enemies.unity
+    path: Assets/My Scenes/Random Spawn shooting Enemies.unity
     guid: b5c0c865c343b4e1e98989a5fab0a994
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 6ee72d15cf39dd748a13eac57397b9af, type: 2}
