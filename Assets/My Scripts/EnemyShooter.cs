@@ -5,37 +5,48 @@ public class EnemyShooter : MonoBehaviour
     [Header("Schuss-Einstellungen")]
     [SerializeField] private GameObject ballPrefab;
     [SerializeField] public float shootInterval = 2f; // Sekunden zwischen Schüssen
-    [SerializeField] public float ballSpeed = 10f;
-    [SerializeField] private float spawnDistance = 1f; // Abstand vom Gegner, wo die Kugel spawnt
+    [SerializeField] private float ballSpeed = 10f;
+    [SerializeField] private float spawnDistance = 1f;
     
-    private Transform player; // Der Spieler/AR-Kamera
+    [Header("Animation")]
+    [SerializeField] private EnemyAnimationController animationController;
+    
+    private Transform player;
     private float nextShootTime;
-
-    GameObject enemy;
-
+    
     void Start()
     {
-        // Finde automatisch die AR-Kamera (Hauptkamera)
         player = Camera.main.transform;
         
         if (player == null)
         {
-            Debug.LogError("Keine Kamera gefunden! Stelle sicher, dass eine Kamera mit dem Tag 'MainCamera' existiert.");
+            Debug.LogError("Keine Kamera gefunden!");
+        }
+        
+        // Automatisch Animation Controller finden falls nicht zugewiesen
+        if (animationController == null)
+        {
+            animationController = GetComponent<EnemyAnimationController>();
         }
         
         nextShootTime = Time.time + shootInterval;
     }
-
+    
     void Update()
     {
-        // Prüfe, ob es Zeit für den nächsten Schuss ist
+        // Nur schießen wenn nicht tot
+        if (animationController != null && animationController.IsDead())
+        {
+            return;
+        }
+        
         if (Time.time >= nextShootTime)
         {
             ShootAtPlayer();
             nextShootTime = Time.time + shootInterval;
         }
     }
-
+    
     void ShootAtPlayer()
     {
         if (ballPrefab == null || player == null)
@@ -43,8 +54,14 @@ public class EnemyShooter : MonoBehaviour
             Debug.LogWarning("BallPrefab oder Spieler nicht zugewiesen!");
             return;
         }
-
-        // Berechne die Richtung zum Spieler
+        
+        // Spiele Attack Animation ab
+        if (animationController != null)
+        {
+            animationController.PlayAttackAnimation();
+        }
+        
+        // Berechne Richtung zum Spieler
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
         
         // Spawn-Position etwas vor dem Gegner
@@ -53,7 +70,7 @@ public class EnemyShooter : MonoBehaviour
         // Erstelle die Kugel
         GameObject ball = Instantiate(ballPrefab, spawnPosition, Quaternion.identity);
         
-        // Füge Geschwindigkeit in Richtung Spieler hinzu
+        // Füge Geschwindigkeit hinzu
         Rigidbody rb = ball.GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -64,11 +81,10 @@ public class EnemyShooter : MonoBehaviour
             Debug.LogWarning("Das Ball-Prefab benötigt eine Rigidbody-Komponente!");
         }
         
-        // Optional: Zerstöre die Kugel nach 3 Sekunden
+        // Zerstöre die Kugel nach 3 Sekunden
         Destroy(ball, 3f);
     }
-
-    // Optional: Visualisiere die Schussrichtung im Editor
+    
     void OnDrawGizmos()
     {
         if (player != null)
@@ -78,11 +94,13 @@ public class EnemyShooter : MonoBehaviour
         }
     }
     
-    // Diese Methode wird vom DifficultyManager aufgerufen
+    /// <summary>
+    /// Erhöhe die Schussrate - wird vom DifficultyManager aufgerufen
+    /// </summary>
     public void IncreaseFireRate(float decreaseAmount)
     {   
-        shootInterval -= decreaseAmount; // Kleinere Zeit = schneller
-        shootInterval = Mathf.Max(0.1f, shootInterval); // Minimum 0.1 Sekunden
+        shootInterval -= decreaseAmount;
+        shootInterval = Mathf.Max(0.1f, shootInterval);
         Debug.Log($"[{gameObject.name}] Neue Schussrate: {shootInterval:F2} Sekunden");
     }
 }
