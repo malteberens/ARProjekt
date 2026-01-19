@@ -1,0 +1,385 @@
+using UnityEngine;
+using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
+
+public class AutomaticSpawning : MonoBehaviour
+{
+    [SerializeField] private ARPlaneManager planeManager;
+    [SerializeField] private GameObject enemyPrefab;
+    
+    [Header("Spawn-Einstellungen")]
+    [SerializeField] private float minDistanceFromCamera = 1f;
+    [SerializeField] private float maxDistanceFromCamera = 5f;
+    [SerializeField] private float minPlaneSize = 0.5f;
+    [SerializeField] private float edgeMargin = 0.2f;
+    [SerializeField] private float spawnHeightOffset = 0.1f;
+    
+    [Header("Automatisches Spawning")]
+    [SerializeField] private bool autoSpawn = false;
+    [SerializeField] private float spawnInterval = 3f;
+    [SerializeField] private int maxEnemies = 5;
+    [SerializeField] private float initialDelay = 2f;
+    
+    [Header("Sichtfeld-Kontrolle")]
+    [SerializeField] private bool requireSpawnInViewport = true; // Nur im Sichtfeld spawnen
+    [SerializeField] private float viewportMargin = 0.1f; // 10% Rand vom Bildschirmrand
+    [SerializeField] private float despawnTime = 5f; // Zeit außerhalb des Sichtfelds bis Despawn
+    [SerializeField] private bool enableDespawning = true; // Despawning aktivieren
+    
+    [Header("UI Textfelder")]
+    [SerializeField] private TextMeshProUGUI activeEnemiesText;
+    [SerializeField] private TextMeshProUGUI destroyedEnemiesTextGameplay;
+    [SerializeField] private TextMeshProUGUI destroyedEnemiesTextEnd;
+    
+    private float nextSpawnTime;
+    private int currentEnemyCount = 0;
+    private int totalDestroyedEnemies = 0;
+    private bool hasStartedSpawning = false;
+
+    private List<GameObject> thrownObjects = new List<GameObject>();
+    private List<GameObject> spawnedEnemies = new List<GameObject>();
+    
+    // Tracking für Despawning
+    private Dictionary<GameObject, float> enemyOutOfViewTime = new Dictionary<GameObject, float>();
+    
+    void Start()
+    {
+        nextSpawnTime = Time.time + initialDelay;
+        UpdateUI();
+    }
+    
+    void Update()
+    {
+        if (!autoSpawn)
+            return;
+        
+        if (!hasStartedSpawning && planeManager.trackables.count >= 1)
+        {
+            hasStartedSpawning = true;
+            Debug.Log("AR-Ebenen erkannt. Spawning startet.");
+        }
+        
+        if (hasStartedSpawning && Time.time >= nextSpawnTime && currentEnemyCount < maxEnemies)
+        {
+            SpawnEnemy();
+            nextSpawnTime = Time.time + spawnInterval;
+        }
+        
+        // Überprüfe Despawning
+        if (enableDespawning)
+        {
+            CheckForDespawning();
+        }
+    }
+    
+    private void CheckForDespawning()
+    {
+        Camera arCamera = Camera.main;
+        if (arCamera == null) return;
+        
+        List<GameObject> toRemove = new List<GameObject>();
+        
+        foreach (GameObject enemy in spawnedEnemies)
+        {
+            if (enemy == null) continue;
+            
+            bool isInViewport = IsPositionInViewport(enemy.transform.position, arCamera);
+            
+            if (!isInViewport)
+            {
+                // Gegner ist außerhalb des Sichtfelds
+                if (!enemyOutOfViewTime.ContainsKey(enemy))
+                {
+                    enemyOutOfViewTime[enemy] = Time.time;
+                }
+                else
+                {
+                    // Prüfe ob genug Zeit vergangen ist
+                    float timeOutOfView = Time.time - enemyOutOfViewTime[enemy];
+                    if (timeOutOfView >= despawnTime)
+                    {
+                        Debug.Log($"Gegner despawnt nach {timeOutOfView:F1}s außerhalb des Sichtfelds");
+                        toRemove.Add(enemy);
+                    }
+                }
+            }
+            else
+            {
+                // Gegner ist wieder im Sichtfeld, Timer zurücksetzen
+                if (enemyOutOfViewTime.ContainsKey(enemy))
+                {
+                    enemyOutOfViewTime.Remove(enemy);
+                }
+            }
+        }
+        
+        // Entferne Gegner die zu lange außerhalb waren
+        foreach (GameObject enemy in toRemove)
+        {
+            DespawnEnemy(enemy);
+        }
+    }
+    
+    private void DespawnEnemy(GameObject enemy)
+    {
+        if (enemy == null) return;
+        
+        spawnedEnemies.Remove(enemy);
+        enemyOutOfViewTime.Remove(enemy);
+        
+        // Entferne Tracker-Komponente um OnEnemyDestroyed zu verhindern
+        EnemyTracker tracker = enemy.GetComponent<EnemyTracker>();
+        if (tracker != null)
+        {
+            tracker.spawner = null;
+        }
+        
+        Destroy(enemy);
+        currentEnemyCount--;
+        UpdateUI();
+    }
+    
+    private bool IsPositionInViewport(Vector3 worldPosition, Camera camera)
+    {
+        Vector3 viewportPoint = camera.WorldToViewportPoint(worldPosition);
+        
+        // Prüfe ob Position hinter der Kamera liegt
+        if (viewportPoint.z < 0)
+            return false;
+        
+        // Prüfe ob Position im Sichtfeld mit Margin liegt
+        float minViewport = viewportMargin;
+        float maxViewport = 1f - viewportMargin;
+        
+        return viewportPoint.x >= minViewport && viewportPoint.x <= maxViewport &&
+               viewportPoint.y >= minViewport && viewportPoint.y <= maxViewport;
+    }
+    
+    public void SpawnEnemy()
+    {
+        List<ARPlane> suitablePlanes = new List<ARPlane>();
+        Camera arCamera = Camera.main;
+        
+        foreach (var detectedPlane in planeManager.trackables)
+        {
+            if (detectedPlane.alignment == PlaneAlignment.HorizontalUp &&
+                IsPlaneValid(detectedPlane, arCamera))
+            {
+                suitablePlanes.Add(detectedPlane);
+            }
+        }
+        
+        if (suitablePlanes.Count == 0)
+        {
+            Debug.LogWarning("Keine geeigneten Ebenen zum Spawnen gefunden!");
+            return;
+        }
+        
+        suitablePlanes = suitablePlanes.OrderByDescending(p => p.size.x * p.size.y).ToList();
+        
+        // Versuche mehrmals eine Position im Sichtfeld zu finden
+        int maxAttempts = requireSpawnInViewport ? 20 : 1;
+        
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            int planeIndex = Random.Range(0, Mathf.Max(1, suitablePlanes.Count / 2));
+            ARPlane selectedPlane = suitablePlanes[planeIndex];
+            
+            Vector3 spawnPosition = GetValidSpawnPosition(selectedPlane, arCamera);
+            
+            if (spawnPosition != Vector3.zero)
+            {
+                // Prüfe ob Position im Sichtfeld liegt (falls erforderlich)
+                if (!requireSpawnInViewport || IsPositionInViewport(spawnPosition, arCamera))
+                {
+                    Quaternion lookRotation = Quaternion.LookRotation(
+                        (arCamera.transform.position - spawnPosition).normalized
+                    );
+                    lookRotation = Quaternion.Euler(0, lookRotation.eulerAngles.y, 0);
+                    
+                    GameObject enemy = Instantiate(enemyPrefab, spawnPosition, lookRotation);
+                    
+                    spawnedEnemies.Add(enemy);
+                    
+                    EnemyTracker tracker = enemy.AddComponent<EnemyTracker>();
+                    tracker.spawner = this;
+                    tracker.isEnemy = true;
+                    
+                    currentEnemyCount++;
+                    UpdateUI();
+                    Debug.Log($"Gegner im Sichtfeld gespawnt! Aktuelle Anzahl: {currentEnemyCount}/{maxEnemies}");
+                    return;
+                }
+            }
+        }
+        
+        Debug.LogWarning("Keine gültige Spawn-Position im Sichtfeld gefunden!");
+    }
+    
+    public void OnEnemyDestroyed()
+    {
+        currentEnemyCount--;
+        totalDestroyedEnemies++;
+        UpdateUI();
+        Debug.Log($"Gegner zerstört! Verbleibende: {currentEnemyCount}, Gesamt zerstört: {totalDestroyedEnemies}");
+    }
+    
+    public void OnProjectileDestroyed()
+    {
+        currentEnemyCount--;
+        UpdateUI();
+        Debug.Log($"Projektil zerstört! Verbleibende Anzahl: {currentEnemyCount}");
+    }
+    
+    private void UpdateUI()
+    {
+        if (activeEnemiesText != null)
+        {
+            activeEnemiesText.SetText("Aktive Gegner: {0}", currentEnemyCount);
+        }
+        
+        if (destroyedEnemiesTextGameplay != null)
+        {
+            destroyedEnemiesTextGameplay.SetText("{0}", totalDestroyedEnemies);
+        }
+        
+        if (destroyedEnemiesTextEnd != null)
+        {
+            destroyedEnemiesTextEnd.SetText("{0} Gegner erledigt", totalDestroyedEnemies);
+        }
+    }
+    
+    public void UpdateUIForEndScreen()
+    {
+        UpdateUI();
+        Debug.Log($"End-Screen aktualisiert: {totalDestroyedEnemies} Gegner zerstört");
+    }
+    
+    private bool IsPlaneValid(ARPlane plane, Camera camera)
+    {
+        if (plane.size.x < minPlaneSize || plane.size.y < minPlaneSize)
+            return false;
+        
+        float distanceToCamera = Vector3.Distance(plane.center, camera.transform.position);
+        if (distanceToCamera < minDistanceFromCamera || distanceToCamera > maxDistanceFromCamera)
+            return false;
+        
+        return true;
+    }
+    
+    private Vector3 GetValidSpawnPosition(ARPlane plane, Camera camera)
+    {
+        Vector2 planeSize = plane.size;
+        Vector3 planeCenter = plane.center;
+        
+        float usableWidth = Mathf.Max(0.1f, planeSize.x - (edgeMargin * 2));
+        float usableHeight = Mathf.Max(0.1f, planeSize.y - (edgeMargin * 2));
+        
+        for (int attempt = 0; attempt < 10; attempt++)
+        {
+            float randomX = Random.Range(-usableWidth / 2f, usableWidth / 2f);
+            float randomZ = Random.Range(-usableHeight / 2f, usableHeight / 2f);
+            
+            Vector3 localPos = planeCenter + new Vector3(randomX, 0f, randomZ);
+            Vector3 worldPos = plane.transform.TransformPoint(localPos);
+            worldPos.y += spawnHeightOffset;
+            
+            float distanceToCamera = Vector3.Distance(worldPos, camera.transform.position);
+            
+            if (distanceToCamera >= minDistanceFromCamera && distanceToCamera <= maxDistanceFromCamera)
+            {
+                return worldPos;
+            }
+        }
+        
+        return Vector3.zero;
+    }
+    
+    public void DestroyAllSpawnedObjects()
+    {
+        UpdateUI();
+        autoSpawn = false;
+        hasStartedSpawning = false;
+        
+        foreach (GameObject obj in thrownObjects)
+        {
+            if (obj != null)
+            {
+                Destroy(obj);
+            }
+        }
+        thrownObjects.Clear();
+        
+        foreach (GameObject enemy in spawnedEnemies)
+        {
+            if (enemy != null)
+            {
+                EnemyTracker tracker = enemy.GetComponent<EnemyTracker>();
+                if (tracker != null)
+                {
+                    tracker.spawner = null;
+                }
+                Destroy(enemy);
+            }
+        }
+        spawnedEnemies.Clear();
+        enemyOutOfViewTime.Clear();
+        
+        currentEnemyCount = 0;
+        totalDestroyedEnemies = 0;
+        
+        Debug.Log("Alle gespawnten Objekte gelöscht und Auto-Spawning deaktiviert");
+    }
+    
+    public void EnableAutoSpawning()
+    {
+        UpdateUI();
+        autoSpawn = true;
+        hasStartedSpawning = false;
+        nextSpawnTime = Time.time + initialDelay;
+        Debug.Log("Auto-Spawning aktiviert");
+    }
+    
+    private void OnDrawGizmos()
+    {
+        if (planeManager == null || !Application.isPlaying)
+            return;
+        
+        Camera cam = Camera.main;
+        if (cam == null)
+            return;
+        
+        foreach (var plane in planeManager.trackables)
+        {
+            if (plane.alignment == PlaneAlignment.HorizontalUp)
+            {
+                bool isValid = IsPlaneValid(plane, cam);
+                Gizmos.color = isValid ? Color.green : Color.red;
+                
+                Gizmos.matrix = plane.transform.localToWorldMatrix;
+                Gizmos.DrawWireCube(plane.center, new Vector3(plane.size.x, 0, plane.size.y));
+            }
+        }
+    }
+}
+
+public class EnemyTracker : MonoBehaviour
+{
+    public AutomaticSpawning spawner;
+    public bool isEnemy = true;
+    
+    void OnDestroy()
+    {
+        if (spawner != null && isEnemy)
+        {
+            spawner.OnEnemyDestroyed();
+        }
+        else if (spawner != null && !isEnemy)
+        {
+            spawner.OnProjectileDestroyed();
+        }
+    }
+}
