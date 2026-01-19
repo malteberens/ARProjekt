@@ -82,7 +82,7 @@ public class EnemyShooter : MonoBehaviour
         }
         
         // Zerstöre die Kugel nach 3 Sekunden
-        Destroy(ball, 3f);
+        Destroy(ball, 6f);
     }
     
     void OnDrawGizmos()

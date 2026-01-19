@@ -542,7 +542,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyShooter
   ballPrefab: {fileID: 7793926026449509633, guid: 16b91e149b20d4e15abc3853104d2f87, type: 3}
   shootInterval: 2
-  ballSpeed: 2
+  ballSpeed: 0.7
   spawnDistance: 0.1
   animationController: {fileID: 5404538127288494642}
 --- !u!1 &6080445376067631614
