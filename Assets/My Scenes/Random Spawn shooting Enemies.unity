@@ -1181,7 +1181,7 @@ PrefabInstance:
     - target: {fileID: 8164650285190468862, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 930e939e9def94ef69711892eaa9af81, type: 3}
+      objectReference: {fileID: 21300000, guid: fce145550522f4e0c989cef55a13314a, type: 3}
     - target: {fileID: 8390904427873091127, guid: cd011d3803afe42f8a18f440ca09e9b0, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -2295,6 +2295,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemySpawner
       objectReference: {fileID: 0}
+    - target: {fileID: 555608686300836473, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
+      propertyPath: showDebugMessages
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
       propertyPath: autoSpawn
       value: 0
@@ -2303,6 +2307,10 @@ PrefabInstance:
       propertyPath: edgeMargin
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
+      propertyPath: enemyPrefab
+      value: 
+      objectReference: {fileID: 6572843302941951417, guid: bf3cc3d7afd9c4a3591008c5c464f97b, type: 3}
     - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
       propertyPath: minPlaneSize
       value: 0.2
@@ -2313,7 +2321,7 @@ PrefabInstance:
       objectReference: {fileID: 2512387470422636670}
     - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
       propertyPath: spawnHeightOffset
-      value: 0
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1852312753387309095, guid: 85f42271bda4846f1a66302c4af32c9f, type: 3}
       propertyPath: destroyedEnemiesTextEnd
