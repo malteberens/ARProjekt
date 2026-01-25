@@ -6,7 +6,6 @@ public class ARPlayerCollision : MonoBehaviour
     public static event Action<GameObject> OnPlayerCollision;
     public static event Action<GameObject> OnPlayerTriggerEnter;
     
-    // KORRIGIERT: Mit Großbuchstaben
     public string[] allowedTags = { "Enemy", "enemy" };
     
     void Start()
@@ -14,7 +13,7 @@ public class ARPlayerCollision : MonoBehaviour
         Debug.Log("ARPlayerCollision Script gestartet");
         EnsureColliderSetup();
     }
-    
+    // Automatisch Player Collider erstellen
     void EnsureColliderSetup()
     {
         Collider col = GetComponent<Collider>();
@@ -44,12 +43,9 @@ public class ARPlayerCollision : MonoBehaviour
     if (other.gameObject.name.Contains("Plane") || 
         other.gameObject.name.Contains("AR"))
     {
-        return; // Ignorieren
+        return; 
     }
     
-   // Debug.Log("=== TRIGGER ERKANNT ===");
-   // Debug.Log("Objekt Name: " + other.gameObject.name);
-   // Debug.Log("Tag des Objekts: " + other.gameObject.tag);
     
     if (IsAllowedTag(other.gameObject.tag))
     {
@@ -64,7 +60,7 @@ public class ARPlayerCollision : MonoBehaviour
     }
 }
 
-    
+    // Kollisionserkennung
     bool IsAllowedTag(string tag)
     {
         if (allowedTags.Length == 0) return true;

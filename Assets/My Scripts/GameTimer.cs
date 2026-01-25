@@ -22,7 +22,6 @@ public class GameTimer : MonoBehaviour
     
     void Start()
     {
-        // Timer startet NICHT automatisch
         timeRemaining = gameDuration;
         UpdateTimerDisplay();
     }
@@ -36,7 +35,7 @@ public class GameTimer : MonoBehaviour
         }
     }
     
-    // Diese Funktion mit Button verknüpfen
+    // Startfunktion
     public void StartTimer()
     {
         if (!timerIsRunning)
@@ -55,7 +54,7 @@ public class GameTimer : MonoBehaviour
         }
     }
     
-    // Diese Funktion aus HealthManager aufrufen
+    // Timer beenden
     public void StopTimer()
     {
         timerIsRunning = false;
@@ -79,7 +78,7 @@ public class GameTimer : MonoBehaviour
             TimeUp();
         }
     }
-    
+    // Level beenden nach Ablauf der Zeit
     void TimeUp()
     {
         timerIsRunning = false;
@@ -119,7 +118,7 @@ public class GameTimer : MonoBehaviour
         }
     }
     
-    // Optional: Timer zurücksetzen
+    // Timer zurücksetzen
     public void ResetTimer()
     {
         StopTimer();
