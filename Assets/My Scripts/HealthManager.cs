@@ -16,8 +16,7 @@ public class HealthManager : MonoBehaviour
     public TextMeshProUGUI endscreenText;
 
     [Header("Referenzen")]
-    //public ARWerfenUnendlich throwingScript; // Dein Wurf-Script
-    public AutomaticSpawning enemySpawner; // Dein Enemy-Spawner (falls vorhanden)
+    public AutomaticSpawning enemySpawner;
     
     private int currentHealth = 3;
     private int totalLostHearts = 0;
@@ -40,6 +39,7 @@ public class HealthManager : MonoBehaviour
     
     void SubscribeToEvents()
     {
+        // Kollisionsevents mit Projektilen
         if (!isSubscribed)
         {
             ARPlayerCollision.OnPlayerCollision += OnCollisionDetected;
@@ -70,6 +70,7 @@ public class HealthManager : MonoBehaviour
     
     public void LoseHeart()
     {
+        // Lebenspunkte aktualisieren
         if (currentHealth <= 0) return;
         
         currentHealth--;
@@ -81,7 +82,7 @@ public class HealthManager : MonoBehaviour
         {
             hearts[currentHealth].SetActive(false);
         }
-        
+        // Spiel beenden
         if (currentHealth <= 0)
         {
             GameOver();
@@ -90,19 +91,21 @@ public class HealthManager : MonoBehaviour
     
     void GameOver()
     {
+        // Timer beenden
         gameTimer.StopTimer();
         Debug.Log("Game Over!");
+        // Gegner und Projektile despawnen
         if (enemySpawner != null)
         {
             enemySpawner.DestroyAllSpawnedObjects();
         }
-        
+        // Canvas wechseln
         if (gameplayCanvas != null)
             gameplayCanvas.SetActive(false);
             
         if (endCanvas != null)
             endCanvas.SetActive(true);
-        
+        // Textfelder im Endscreen aktualisieren
         UpdateEndscreenText();
     }
     
@@ -135,8 +138,7 @@ public class HealthManager : MonoBehaviour
     {
         return currentHealth;
     }
-    
-    // ÖFFENTLICHE RESET-METHODE (wird von ResetManager aufgerufen)
+    // Methode für ResetManager
     public void ResetGame()
     {
         Debug.Log("HealthManager: Reset wird durchgeführt");

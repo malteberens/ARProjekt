@@ -35,22 +35,24 @@ public class TouchTextEditor : MonoBehaviour
             
             if (touch.phase == TouchPhase.Began)
             {
+                // zählt nur, wenn der Touch nicht auf einem UI Objekt ist
                 if (!EventSystem.current.IsPointerOverGameObject(touch.fingerId))
                 {
                     HandleTouch(touch.position);
                 }
             }
         }
-        
+        // Maus
         if (Input.GetMouseButtonDown(0))
         {
+            // zählt nur, wenn der Touch nicht auf einem UI Objekt ist
             if (!EventSystem.current.IsPointerOverGameObject())
             {
                 HandleTouch(Input.mousePosition);
             }
         }
     }
-    
+    // Counter und Textfeldaktualisierung
     void HandleTouch(Vector2 position)
     {
         touchCount++;

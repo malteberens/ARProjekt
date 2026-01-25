@@ -233,7 +233,7 @@ public class AutomaticSpawning : MonoBehaviour
         UpdateUI();
         Debug.Log($"Projektil zerstört! Verbleibende Anzahl: {currentEnemyCount}");
     }
-    
+    // Funktion, um getötete Gegner zu zählen
     private void UpdateUI()
     {
         if (activeEnemiesText != null)
@@ -297,7 +297,7 @@ public class AutomaticSpawning : MonoBehaviour
         
         return Vector3.zero;
     }
-    
+    // Methode, wenn das Level zuende ist
     public void DestroyAllSpawnedObjects()
     {
         UpdateUI();

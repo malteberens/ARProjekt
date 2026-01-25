@@ -6,8 +6,8 @@ public class CanvasSwitcher : MonoBehaviour
 
     void Start()
     {
-        // Findet nur AKTIVE Canvas
-        allCanvases = FindObjectsOfType<Canvas>(true);  // Parameter 'true' = auch inaktive!
+        // findet alle Canvas Objekte
+        allCanvases = FindObjectsOfType<Canvas>(true);
         Debug.Log("Gefundene Canvas: " + allCanvases.Length);
         
         foreach (Canvas canvas in allCanvases)
@@ -22,6 +22,7 @@ public class CanvasSwitcher : MonoBehaviour
         
         foreach (Canvas canvas in allCanvases)
         {
+            // übergebenes Canvas aktivieren
             bool shouldBeActive = (canvas.gameObject.name == canvasName);
             canvas.gameObject.SetActive(shouldBeActive);
             

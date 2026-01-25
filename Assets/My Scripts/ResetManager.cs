@@ -6,14 +6,13 @@ public class ResetManager : MonoBehaviour
     public HealthManager healthManager;
     
     [Header("Optionale Objekte zum Zurücksetzen")]
-    public GameObject[] objectsToReset; // Enemies, Collectibles, etc.
+    public GameObject[] objectsToReset;
     
-    // Wird vom Button aufgerufen
     public void ResetGame()
     {
-        Debug.Log("=== ResetManager: Reset wird gestartet ===");
+        Debug.Log("Reset wird gestartet");
         
-        // 1. Health Manager zurücksetzen
+        // Health Manager zurücksetzen
         if (healthManager != null)
         {
             ResetHealthSystem();
@@ -23,17 +22,17 @@ public class ResetManager : MonoBehaviour
             Debug.LogError("HealthManager nicht zugewiesen!");
         }
         
-        // 2. Optional: Andere Objekte zurücksetzen
+        // Andere Objekte zurücksetzen
         ResetGameObjects();
         
-        Debug.Log("=== ResetManager: Reset abgeschlossen ===");
+        Debug.Log("Reset abgeschlossen");
     }
     
     void ResetHealthSystem()
     {
-        Debug.Log("Health System wird zurückgesetzt...");
+        Debug.Log("Health System wird zurückgesetzt");
         
-        // Rufe die öffentliche Reset-Methode auf
+        // Methode im HealthManager
         healthManager.ResetGame();
     }
     
